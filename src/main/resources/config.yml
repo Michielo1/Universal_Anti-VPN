@@ -1,0 +1,74 @@
+###########
+# AntiVPN #
+###########
+
+#
+#
+# Settings
+#
+#
+
+vpn:
+  alert: true
+  kick: true
+
+cache:
+  # Should we use an internal cache system to avoid needlessly checking IPs?
+  enabled: true
+
+  # Configure what kind of cache we're using
+  # This can be set to "H2" or "mysql"
+  type: "H2"
+
+  h2:
+    username: 'sa'
+    password: ''
+    mode: 'embedded' # <-- highly discourage changing this unless you know what you're doing!
+
+  mysql:
+    host: 'localhost'
+    port: 3306
+    database_name: 'your_database'
+    username: 'your_username'
+    password: 'your_password'
+
+  # How often we should check on invalidated records in minutes
+  cleanup_interval: 60
+
+
+#
+#
+# Primary API & Fallback-protocol
+#
+#
+
+primary: "kauri"
+fallback_protocol: ["proxycheck"]
+
+#
+#
+# API's
+#
+#
+
+kauri:
+  enabled: true
+  api_key: ""
+
+proxycheck:
+  enabled: true
+  api_key: ""
+
+# More API's coming soon!
+
+#
+#
+# Messages
+#
+#
+
+# You can use minecraft color codes.
+# In the disconnect you can use \n as line-break
+# In the alert you can use '%player%' to represent the player name.
+disconnect: "&cYou are using a VPN!\nPlease disable the VPN and reconnect"
+alert: "&l[AntiVPN] &cplayer &f%player% &ctried to join with a VPN!"

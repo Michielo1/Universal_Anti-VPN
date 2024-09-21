@@ -1,5 +1,6 @@
 package com.michielo.antivpn;
 
+import com.michielo.antivpn.bukkit.command.AntiVpnCommandListener;
 import com.michielo.antivpn.bukkit.listener.PlayerJoinListener;
 import com.michielo.antivpn.manager.CacheManager;
 import com.michielo.antivpn.manager.ConfigManager;
@@ -17,6 +18,9 @@ public class AntiVPN extends JavaPlugin {
 
         // listener
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+
+        // commandhandler
+        this.getCommand("antivpn").setExecutor(new AntiVpnCommandListener());
     }
 
     @Override

@@ -4,3 +4,4 @@ author: Michielo
 main: com.michielo.antivpn.AntiVPN
 
 commands:
+  antivpn:

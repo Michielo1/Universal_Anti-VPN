@@ -52,6 +52,9 @@ public class H2Cache extends AbstractCache {
                 stmt.execute("ALTER TABLE cache ADD COLUMN IF NOT EXISTS \"value\" VARCHAR(255)");
                 // add expiration
                 stmt.execute("ALTER TABLE cache ADD COLUMN IF NOT EXISTS \"expiration\" BIGINT");
+
+                // Create the permanent storage table
+                stmt.execute("CREATE TABLE IF NOT EXISTS permanent_storage (id VARCHAR(255) PRIMARY KEY, \"key\" VARCHAR(255), \"value\" VARCHAR(255))");
             }
         } catch (SQLException e) {
             plugin.getLogger().severe("Failed to initialize H2 database: " + e.getMessage());
@@ -60,7 +63,6 @@ public class H2Cache extends AbstractCache {
             plugin.getLogger().severe("Failed to load H2 driver: " + e.getMessage());
         }
     }
-
 
     @Override
     public void store(String key, String value, long expirationTime) {
@@ -142,4 +144,53 @@ public class H2Cache extends AbstractCache {
         }
     }
 
+    @Override
+    public void storePermanent(String key, String value) {
+        String id = UUID.randomUUID().toString();
+        String insertSql = "INSERT INTO \"PERMANENT_STORAGE\" (\"ID\", \"key\", \"value\") VALUES (?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(insertSql)) {
+            stmt.setString(1, id);
+            stmt.setString(2, key);
+            stmt.setString(3, value);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Error inserting into PERMANENT_STORAGE: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String retrievePermanent(String key) {
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT \"value\" FROM \"PERMANENT_STORAGE\" WHERE \"key\" = ?")) {
+            pstmt.setString(1, key);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("value");
+                }
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().warning("Failed to retrieve permanent entry from H2: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void removePermanent(String key) {
+        try (PreparedStatement pstmt = connection.prepareStatement("DELETE FROM \"PERMANENT_STORAGE\" WHERE \"key\" = ?")) {
+            pstmt.setString(1, key);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().warning("Failed to remove permanent entry from H2: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void clearPermanentStorage() {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("TRUNCATE TABLE \"PERMANENT_STORAGE\"");
+        } catch (SQLException e) {
+            plugin.getLogger().warning("Failed to clear permanent storage in H2: " + e.getMessage());
+        }
+    }
 }

@@ -40,16 +40,29 @@ public class ApiManager {
 
     public VPNResult isAVPN(String ip) {
 
+        // check for local IP
         if (isLocal(ip)) {
             return VPNResult.NEGATIVE;
         }
 
+        // check for hard blocked/whitelisted
+        String hardfixed = CacheManager.getInstance().getCache().retrievePermanent(ip);
+        if (hardfixed != null)  {
+            if (hardfixed.equalsIgnoreCase("true")) {
+                return VPNResult.NEGATIVE;
+            } else {
+                return VPNResult.POSITIVE;
+            }
+        }
+
+        // check for cached result
         String cachedResult = CacheManager.getInstance().getCache().retrieve(ip);
         if (cachedResult != null) {
             Bukkit.getLogger().info("[AntiVPN] Used a cached result!");
             return VPNResult.valueOf(cachedResult);
         }
 
+        // get new result
         VpnAPI primaryAPI = apis.get(primary);
         VPNResult primaryResult = primaryAPI.checkIP(ip);
         if (primaryResult != VPNResult.UNKNOWN) {

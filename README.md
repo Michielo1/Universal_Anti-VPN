@@ -34,5 +34,11 @@ Below you will find a table of all configurable settings. Please note this omits
 To go a bit more in-depth of the fallback_protocol setting; this setting uses an array of supported backend(s). This means if you want to, for example, use proxycheck as fallback API, this would be ``["proxycheck]"``. If you wanted to first attempt proxycheck and after that kaurivpn, this would be ``["proxycheck", "kaurivpn"]``. Please note this fallback-protocol is only used when the ``primary`` backend fails.
 
 
+## Commands & Permissions
+| Command                 | Permission        | Note              |
+|-------------------------|-------------------|-------------------|
+| /antivpn whitelist <IP> | antivpn.whitelist | Whitelists the IP |
+| /antivpn block <IP>     | antivpn.block     | Blocks the IP     |
+
 ## Support
 Join our discord for support [here](https://discord.gg/XkDPdEfcQJ).

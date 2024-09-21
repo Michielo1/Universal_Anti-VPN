@@ -42,6 +42,12 @@ public class MySQLCache extends AbstractCache {
                         "`key` VARCHAR(255), " +
                         "`value` VARCHAR(255), " +
                         "expiration BIGINT)");
+
+                // Create the permanent storage table
+                stmt.execute("CREATE TABLE IF NOT EXISTS permanent_storage (" +
+                        "id VARCHAR(255) PRIMARY KEY, " +
+                        "`key` VARCHAR(255), " +
+                        "`value` VARCHAR(255))");
             }
 
         } catch (SQLException e) {
@@ -129,6 +135,58 @@ public class MySQLCache extends AbstractCache {
             }
         } catch (SQLException e) {
             plugin.getLogger().warning("Failed to close MySQL database connection: " + e.getMessage());
+        }
+    }
+
+    // New methods for permanent storage
+
+    @Override
+    public void storePermanent(String key, String value) {
+        String id = UUID.randomUUID().toString();
+        String insertSql = "INSERT INTO permanent_storage (id, `key`, `value`) VALUES (?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(insertSql)) {
+            stmt.setString(1, id);
+            stmt.setString(2, key);
+            stmt.setString(3, value);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Error inserting into permanent_storage: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String retrievePermanent(String key) {
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT `value` FROM permanent_storage WHERE `key` = ?")) {
+            pstmt.setString(1, key);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("value");
+                }
+            }
+        } catch (SQLException e) {
+            plugin.getLogger().warning("Failed to retrieve permanent entry from MySQL: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void removePermanent(String key) {
+        try (PreparedStatement pstmt = connection.prepareStatement("DELETE FROM permanent_storage WHERE `key` = ?")) {
+            pstmt.setString(1, key);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            plugin.getLogger().warning("Failed to remove permanent entry from MySQL: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void clearPermanentStorage() {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("TRUNCATE TABLE permanent_storage");
+        } catch (SQLException e) {
+            plugin.getLogger().warning("Failed to clear permanent storage in MySQL: " + e.getMessage());
         }
     }
 }

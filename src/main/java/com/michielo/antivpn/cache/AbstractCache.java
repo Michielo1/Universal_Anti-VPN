@@ -19,12 +19,16 @@ public abstract class AbstractCache {
     }
 
     public abstract void store(String key, String value, long expirationTime);
+    public abstract void storePermanent(String key, String value);
     public abstract String retrieve(String key);
+    public abstract String retrievePermanent(String key);
     public abstract void invalidate(String key);
 
     public void clear() {
         cache.clear();
     }
+    public abstract void removePermanent(String key);
+    public abstract void clearPermanentStorage();
 
     public int size() {
         return cache.size();

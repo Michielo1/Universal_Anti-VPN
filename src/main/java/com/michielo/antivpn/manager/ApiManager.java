@@ -1,5 +1,6 @@
 package com.michielo.antivpn.manager;
 
+import com.michielo.antivpn.api.APIResult;
 import com.michielo.antivpn.api.VPNResult;
 import com.michielo.antivpn.api.VpnAPI;
 import com.michielo.antivpn.api.impl.KauriAPI;
@@ -64,10 +65,10 @@ public class ApiManager {
 
         // get new result
         VpnAPI primaryAPI = apis.get(primary);
-        VPNResult primaryResult = primaryAPI.checkIP(ip);
-        if (primaryResult != VPNResult.UNKNOWN) {
+        APIResult primaryResult = primaryAPI.checkIP(ip);
+        if (primaryResult.getResult() != VPNResult.UNKNOWN) {
             CacheManager.getInstance().getCache().store(ip, primaryResult.toString(),  30 * 24 * 60 * 60 * 1000); // 30d
-            return primaryResult;
+            return primaryResult.getResult();
         }
 
         Bukkit.getLogger().severe("Primary API (" + primary + ") produced an error! Triggering fallback protocol.");
@@ -75,10 +76,10 @@ public class ApiManager {
         for (int i = 0; i < fallbackOrder.size(); i++) {
             String api = fallbackOrder.get(i);
             VpnAPI nextFallbackAPI = apis.get(api);
-            VPNResult fallbackResult = nextFallbackAPI.checkIP(ip);
-            if (fallbackResult != VPNResult.UNKNOWN) {
+            APIResult fallbackResult = nextFallbackAPI.checkIP(ip);
+            if (fallbackResult.getResult() != VPNResult.UNKNOWN) {
                 CacheManager.getInstance().getCache().store(ip, primaryResult.toString(),  30 * 24 * 60 * 60 * 1000); // 30d
-                return fallbackResult;
+                return fallbackResult.getResult();
             }
 
             // seeing if we have another fallback api

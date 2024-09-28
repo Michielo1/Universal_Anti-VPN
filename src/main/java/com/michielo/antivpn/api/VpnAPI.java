@@ -2,6 +2,6 @@ package com.michielo.antivpn.api;
 
 public interface VpnAPI {
 
-    public VPNResult checkIP(String ip);
+    public APIResult checkIP(String ip);
 
 }

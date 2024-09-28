@@ -2,6 +2,7 @@ package com.michielo.antivpn.api.impl;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.michielo.antivpn.api.APIResult;
 import com.michielo.antivpn.api.VPNResult;
 import com.michielo.antivpn.api.VpnAPI;
 
@@ -25,7 +26,7 @@ public class ProxycheckAPI implements VpnAPI {
      */
 
     @Override
-    public VPNResult checkIP(String ip) {
+    public APIResult checkIP(String ip) {
         try {
             URL url;
             if (apikey == null) {
@@ -48,13 +49,16 @@ public class ProxycheckAPI implements VpnAPI {
             JsonObject jsonObject = new JsonParser().parse(str).getAsJsonObject();
             http.disconnect();
 
-            boolean proxy = Boolean.valueOf(jsonObject.get("proxy").getAsString()) || jsonObject.get("proxy").getAsString().equalsIgnoreCase("yes");
-            if (proxy) return VPNResult.POSITIVE;
-            return VPNResult.NEGATIVE;
+            Boolean proxy = Boolean.valueOf(jsonObject.get("proxy").getAsString());
+
+            VPNResult result = VPNResult.NEGATIVE;
+            if (proxy) result = VPNResult.POSITIVE;
+
+            return new APIResult(result);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return VPNResult.UNKNOWN;
+        return new APIResult(VPNResult.UNKNOWN);
     }
 
 }

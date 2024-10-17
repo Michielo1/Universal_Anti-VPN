@@ -1,6 +1,7 @@
 package com.michielo.antivpn.manager;
 
 import com.michielo.antivpn.cache.AbstractCache;
+import com.michielo.antivpn.cache.FlatFileCache;
 import com.michielo.antivpn.cache.H2Cache;
 import com.michielo.antivpn.cache.MySQLCache;
 import org.bukkit.Bukkit;
@@ -24,7 +25,9 @@ public class CacheManager {
             String type = ConfigManager.getString("cache.type");
 
             // validate valid type
-            if (!type.equalsIgnoreCase("H2") && !type.equalsIgnoreCase("mysql")) {
+            if (!type.equalsIgnoreCase("H2") &&
+                    !type.equalsIgnoreCase("mysql") &&
+                    !type.equalsIgnoreCase("flat")) {
                 Bukkit.getLogger().severe("[AntiVPN] Invalid cache type! Defaulting to H2...");
                 type = "H2";
             }
@@ -33,6 +36,8 @@ public class CacheManager {
                 this.cache = new H2Cache(plugin);
             } else if (type.equalsIgnoreCase("mysql")) {
                 this.cache = new MySQLCache(plugin);
+            } else if (type.equalsIgnoreCase("flat")) {
+                this.cache = new FlatFileCache(plugin);
             }
         }
 

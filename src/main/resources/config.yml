@@ -17,7 +17,8 @@ cache:
   enabled: true
 
   # Configure what kind of cache we're using
-  # This can be set to "H2" or "mysql"
+  # This can be set to "H2", "mysql" or "flat"
+  # mysql needs to be configured, H2 and flat cache can be used with default settings, although we recommend changing H2
   type: "H2"
 
   h2:

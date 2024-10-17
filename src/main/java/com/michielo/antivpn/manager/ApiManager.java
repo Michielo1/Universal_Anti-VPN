@@ -57,17 +57,21 @@ public class ApiManager {
         }
 
         // check for cached result
-        String cachedResult = CacheManager.getInstance().getCache().retrieve(ip);
-        if (cachedResult != null) {
-            Bukkit.getLogger().info("[AntiVPN] Used a cached result!");
-            return VPNResult.valueOf(cachedResult);
+        String serializedCachedResult = CacheManager.getInstance().getCache().retrieve(ip);
+        if (serializedCachedResult != null) {
+            try {
+                APIResult apiResult = new APIResult(serializedCachedResult); // deserialize result
+                VPNResult cachedResult = apiResult.getResult(); // get VPNResult from APIResult
+                Bukkit.getLogger().info("[AntiVPN] Used a cached result!");
+                return cachedResult;
+            } catch (IllegalArgumentException e) {}
         }
 
         // get new result
         VpnAPI primaryAPI = apis.get(primary);
         APIResult primaryResult = primaryAPI.checkIP(ip);
         if (primaryResult.getResult() != VPNResult.UNKNOWN) {
-            CacheManager.getInstance().getCache().store(ip, primaryResult.toString(),  30 * 24 * 60 * 60 * 1000); // 30d
+            CacheManager.getInstance().getCache().store(ip, primaryResult.serialize(), System.currentTimeMillis() + 30 * 24 * 60 * 60 * 1000); // 30d
             return primaryResult.getResult();
         }
 
@@ -78,7 +82,7 @@ public class ApiManager {
             VpnAPI nextFallbackAPI = apis.get(api);
             APIResult fallbackResult = nextFallbackAPI.checkIP(ip);
             if (fallbackResult.getResult() != VPNResult.UNKNOWN) {
-                CacheManager.getInstance().getCache().store(ip, primaryResult.toString(),  30 * 24 * 60 * 60 * 1000); // 30d
+                CacheManager.getInstance().getCache().store(ip, primaryResult.serialize(), System.currentTimeMillis() + 30 * 24 * 60 * 60 * 1000); // 30d
                 return fallbackResult.getResult();
             }
 

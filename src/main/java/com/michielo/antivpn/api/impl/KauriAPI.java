@@ -8,7 +8,6 @@ import com.michielo.antivpn.api.VpnAPI;
 import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 
@@ -55,8 +54,8 @@ public class KauriAPI implements VpnAPI {
             VPNResult result = VPNResult.NEGATIVE;
             if (proxy) result = VPNResult.POSITIVE;
 
-            return new APIResult(result, location);
-        } catch (IOException | NullPointerException e) {
+            return new APIResult(result);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new APIResult(VPNResult.UNKNOWN);

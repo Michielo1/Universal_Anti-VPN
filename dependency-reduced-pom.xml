@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.michielo</groupId>
   <artifactId>universal_antivpn</artifactId>
-  <version>1.0.0</version>
+  <version>1.2.1</version>
   <build>
     <plugins>
       <plugin>

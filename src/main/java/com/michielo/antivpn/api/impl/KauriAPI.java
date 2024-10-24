@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.michielo.antivpn.api.APIResult;
 import com.michielo.antivpn.api.VPNResult;
 import com.michielo.antivpn.api.VpnAPI;
+import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -48,6 +49,7 @@ public class KauriAPI implements VpnAPI {
             http.disconnect();
 
             Boolean proxy = Boolean.valueOf(jsonObject.get("proxy").getAsString());
+            String location = jsonObject.get("latitude").getAsString() + ";" + jsonObject.get("longitude").getAsString();
 
             VPNResult result = VPNResult.NEGATIVE;
             if (proxy) result = VPNResult.POSITIVE;

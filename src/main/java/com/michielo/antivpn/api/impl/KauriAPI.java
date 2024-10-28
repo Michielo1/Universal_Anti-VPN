@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import com.michielo.antivpn.api.APIResult;
 import com.michielo.antivpn.api.VPNResult;
 import com.michielo.antivpn.api.VpnAPI;
-import org.bukkit.Bukkit;
+import com.michielo.antivpn.manager.ConfigManager;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -56,7 +56,7 @@ public class KauriAPI implements VpnAPI {
 
             return new APIResult(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (ConfigManager.getBoolean("display_api_errors")) e.printStackTrace();
         }
         return new APIResult(VPNResult.UNKNOWN);
     }

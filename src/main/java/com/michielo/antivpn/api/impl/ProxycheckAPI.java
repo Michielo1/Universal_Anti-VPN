@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import com.michielo.antivpn.api.APIResult;
 import com.michielo.antivpn.api.VPNResult;
 import com.michielo.antivpn.api.VpnAPI;
+import com.michielo.antivpn.manager.ConfigManager;
 import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
@@ -64,7 +65,7 @@ public class ProxycheckAPI implements VpnAPI {
                 return new APIResult(result);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (ConfigManager.getBoolean("display_api_errors")) e.printStackTrace();
         }
         return new APIResult(VPNResult.UNKNOWN);
     }

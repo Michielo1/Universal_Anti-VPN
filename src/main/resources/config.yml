@@ -73,3 +73,11 @@ proxycheck:
 # In the alert you can use '%player%' to represent the player name.
 disconnect: "&cYou are using a VPN!\nPlease disable the VPN and reconnect"
 alert: "&l[AntiVPN] &cplayer &f%player% &ctried to join with a VPN!"
+
+#
+#
+# Extra's
+#
+#
+
+display_api_errors: false

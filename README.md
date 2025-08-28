@@ -1,6 +1,17 @@
 # Universal_Anti-VPN
 Spigot Universal Anti-VPN with multiple backends and automatic fallover management.
 
+## Supported server softwares
+| Server software | Compatible | Proxy software | Compatible |
+|-----------------|------------|----------------|------------|
+| Bukkit          |    ✔️      | Bungeecord     | PLANNED   |
+| Spigot          |    ✔️      | Waterfall      | PLANNED   |
+| Paper           |    ✔️      | Velocity       | PLANNED   |
+| Purpur          |    ✔️      |
+| Folia           |    ✔️      |
+| Sponge          |  PLANNED   |
+
+Don't see your server software? You can try it out but there are no guarantees.
 
 ## Supported backends
 Currently all backends support API keys that you can use in this plugin to exceed the amount of free queries. These API keys should be purchased on their respective platforms and can be set in the config.yml of this plugin. Issues with API keys or false-positives should be handled by the respective backend provider and not this plugin.
